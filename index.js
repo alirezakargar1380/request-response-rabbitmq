@@ -19,7 +19,10 @@ amqp.connect('amqp://localhost', function (error0, connection) {
         channel.prefetch(1);
         console.log(' [x] Awaiting RPC requests');
 
+        const unic_id = "asdfaouq92u9qwe"
         channel.consume(queue, function reply(msg) {
+            if (unic_id !== msg.properties.correlationId) return;
+
             console.log(msg.content.toString('utf8'));
             console.log("ID:", msg.properties.correlationId)
             
@@ -33,7 +36,7 @@ amqp.connect('amqp://localhost', function (error0, connection) {
         });
 
         channel.sendToQueue(queue, Buffer.from('request'), {
-            correlationId: "asdfaouq92u9qwe",
+            correlationId: unic_id,
             replyTo: queue
         }); 
  
